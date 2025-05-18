@@ -1,0 +1,69 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Backend (H2)",
+            "type": "shell",
+            "command": "cd ${workspaceFolder}/backend && ./mvnw spring-boot:run -Dspring-boot.run.arguments=\"--spring.docker.compose.enabled=false\"",
+            "windows": {
+                "command": "cd ${workspaceFolder}/backend && .\\mvnw spring-boot:run -Dspring-boot.run.arguments=\"--spring.docker.compose.enabled=false\""
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "."
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".",
+                    "endsPattern": "Started BackendApplication"
+                }
+            }
+        },
+        {
+            "label": "Start Backend (MySQL)",
+            "type": "shell",
+            "command": "cd ${workspaceFolder}/backend && ./mvnw spring-boot:run -Dspring-boot.run.arguments=\"--spring.profiles.active=mysql --spring.docker.compose.enabled=false\"",
+            "windows": {
+                "command": "cd ${workspaceFolder}/backend && .\\mvnw spring-boot:run -Dspring-boot.run.arguments=\"--spring.profiles.active=mysql --spring.docker.compose.enabled=false\""
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "."
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".",
+                    "endsPattern": "Started BackendApplication"
+                }
+            }
+        },
+        {
+            "label": "Stop Backend (H2)",
+            "type": "shell",
+            "command": "echo ${input:terminateBackendH2}",
+            "problemMatcher": []
+        },
+        {
+            "label": "Stop Backend (MySQL)",
+            "type": "shell",
+            "command": "echo ${input:terminateBackendMySQL}",
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "terminateBackendH2",
+            "type": "command",
+            "command": "workbench.action.tasks.terminate",
+            "args": "Start Backend (H2)"
+        },
+        {
+            "id": "terminateBackendMySQL",
+            "type": "command",
+            "command": "workbench.action.tasks.terminate",
+            "args": "Start Backend (MySQL)"
+        }
+    ]
+}

@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: windfall-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: windfall
+      MYSQL_USER: windfall
+      MYSQL_PASSWORD: windfall
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - windfall-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "windfall", "-pwindfall"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    profiles: ["backend-mysql", "full-stack"]
+
+  # Spring Boot Backend with MySQL
+  backend-mysql:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: windfall-backend-mysql
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/windfall?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: windfall
+      SPRING_DATASOURCE_PASSWORD: windfall
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_PROFILES_ACTIVE: mysql
+    ports:
+      - "8080:8080"
+    networks:
+      - windfall-network
+    profiles: ["backend-mysql", "full-stack"]
+
+  # Spring Boot Backend with H2
+  backend-h2:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: windfall-backend-h2
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+    ports:
+      - "8080:8080"
+    networks:
+      - windfall-network
+    profiles: ["backend-h2"]
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: windfall-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend-mysql
+    ports:
+      - "80:80"
+    networks:
+      - windfall-network
+    profiles: ["full-stack"]
+
+networks:
+  windfall-network:
+    driver: bridge
+
+volumes:
+  mysql-data:

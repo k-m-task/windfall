@@ -1,0 +1,95 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        // Frontend configurations
+        {
+            "name": "Frontend: Start React App",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/frontend",
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": ["start"],
+            "env": {
+                "BROWSER": "none"
+            },
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Frontend: Launch Chrome",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}/frontend",
+            "sourceMapPathOverrides": {
+                "webpack:///src/*": "${webRoot}/src/*"
+            }
+        },
+        {
+            "name": "Full Stack: Backend (H2) + Frontend",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/frontend",
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": ["start"],
+            "env": {
+                "BROWSER": "none"
+            },
+            "console": "integratedTerminal",
+            "preLaunchTask": "Start Backend (H2)",
+            "postDebugTask": "Stop Backend (H2)"
+        },
+        {
+            "name": "Full Stack: Backend (MySQL) + Frontend",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/frontend",
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": ["start"],
+            "env": {
+                "BROWSER": "none"
+            },
+            "console": "integratedTerminal",
+            "preLaunchTask": "Start Backend (MySQL)",
+            "postDebugTask": "Stop Backend (MySQL)"
+        },
+        // Backend configurations
+        {
+            "type": "java",
+            "name": "BackendApplication",
+            "request": "launch",
+            "mainClass": "com.windfall.backend.BackendApplication",
+            "projectName": "backend",
+            "args": "--spring.docker.compose.enabled=false"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot (MySQL Database)",
+            "request": "launch",
+            "mainClass": "com.windfall.backend.BackendApplication",
+            "projectName": "backend",
+            "args": "--spring.profiles.active=mysql --spring.docker.compose.enabled=false",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot (H2 Database)",
+            "request": "launch",
+            "mainClass": "com.windfall.backend.BackendApplication",
+            "projectName": "backend",
+            "args": "--spring.docker.compose.enabled=false",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot (MySQL + Debug)",
+            "request": "launch",
+            "mainClass": "com.windfall.backend.BackendApplication",
+            "projectName": "backend",
+            "args": "--spring.profiles.active=mysql --spring.docker.compose.enabled=false",
+            "vmArgs": "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000"
+        }
+    ]
+}
